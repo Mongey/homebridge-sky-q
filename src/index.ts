@@ -51,7 +51,7 @@ class SkyQAccessory {
 
     this.tvService
       .getCharacteristic(Characteristic.RemoteKey)
-      .on("set", this.setRemoteKey);
+      .on("set", this.setRemoteKey.bind(this));
 
     this.tvService
       .getCharacteristic(Characteristic.PowerModeSelection)
@@ -64,7 +64,7 @@ class SkyQAccessory {
     //this.tvService.setCharacteristic(Characteristic.ActiveIdentifier, 0);
     this.tvService
       .getCharacteristic(Characteristic.ActiveIdentifier)
-      .on("set", this.setRemoteKey);
+      .on("set", this.setRemoteKey.bind(this));
 
     this.inputSkyQService = new Service.InputSource("skyq", "Sky Q");
     this.inputSkyQService
@@ -94,10 +94,10 @@ class SkyQAccessory {
       callback(null, isOn);
     });
   }
+
   setRemoteKey(state, callback) {
     console.log("input", state);
-    var platform = this;
-    platform.log("Setting key state...");
+    this.log("Setting key state...");
     var input_key;
     switch (state)
     {
@@ -129,12 +129,12 @@ class SkyQAccessory {
         input_key = 'i';
       break;
     }
-    if(input_key)
-      {
-        this.remoteControl.press(input_key, (err)=>{
-          callback();
-        });
-      }
+
+    if(input_key){
+      this.remoteControl.press(input_key, (err)=>{
+        callback();
+      });
+    }
   }
 
   public getServices() {
